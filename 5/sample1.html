@@ -8,8 +8,8 @@
  <script>
       // ページの読み込みを待つ
       window.addEventListener('DOMContentLoaded', init);
-      let h = 255;
-      let up = true;
+      let h = 0.0;
+      let bgColor;
 
       function init() {
         // サイズを指定
@@ -23,6 +23,7 @@
 
         // シーンを作成
         const scene = new THREE.Scene();
+        scene.background = new THREE.Color(bgColor);
 
         // カメラを作成
         const camera = new THREE.PerspectiveCamera(45, width / height);
@@ -41,6 +42,8 @@
         // シーンに追加
         scene.add(directionalLight2);
 
+        scene.fog = new THREE.Fog( 0xcccccc, 10, 15 );
+
         // helper
         const gridHelper = new THREE.GridHelper(2,10); // size, step
         scene.add(gridHelper);
@@ -49,32 +52,39 @@
 
         // 箱を作成
         var geometry = new THREE.BoxGeometry(1, 1, 1);
-        var material = new THREE.MeshPhongMaterial({ color: `hsl(0,100%,50%)`});
+        var material = new THREE.MeshPhongMaterial({ transparent: false,wireframe:false, opacity:0.5, color: 'yellow'});
         var box = new THREE.Mesh(geometry, material);
-        box.position.set(0,0,0); //位置を指定
+        box.position.set(0,0,-5); //位置を指定
         scene.add(box);   // シーンに追加
 
         update();
 
         // 毎フレーム時に実行されるループイベントです
         function update() {
+          bgColor = document.getElementById('bgColor');
           // レンダリング
           renderer.render(scene, camera);
           requestAnimationFrame(update);
           // 箱を回転させる
           box.rotation.x += 0.1;
           box.rotation.y += 0.1;
-          if (h >= 255 && up === true) {
-              h -= 1;
-          } else if (h <= 0) {
-              h += 1;
-          } else {
-              h += 1;
+          box.material.color.set(`hsl(${h},50%,50%)`);
+          // directionalLight1.color.set(`hsl(${h},50%,50%)`);
+          scene.background.set(bgColor.value);
+          if (h >= 255) {
+            h = 0;
           }
-          document.getElementById('h').textContent = `${h}`;
+          h += 0.5;
+          document.getElementById('h').textContent = `Box Hue : ${h}`;
         }
       }
     </script>
-    <p id="h"></p>
+    
+    <fieldset style="position: absolute; margin-bottom: 20px; bottom: 0">
+      <legend>Pref</legend>
+      <p id="h"></p>
+    <label><p>Background color</p><input type="color" id="bgColor" name="Color"></label>
+    </fieldset>
+  
 </body>
 </html>
