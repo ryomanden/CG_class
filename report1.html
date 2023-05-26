@@ -1,0 +1,140 @@
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <title>Report1</title>
+    <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+</head>
+    <h1 id="title">Report1</h1>
+    <script>
+        window.addEventListener('DOMContentLoaded', init);
+
+        let h = 0.0;
+        let bgColor;
+
+        function init() {
+
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            // const width = 600;
+            // const height = 400;
+
+            // レンダラーを作成
+            var renderer = new THREE.WebGLRenderer();
+            document.body.appendChild(renderer.domElement);
+            renderer.setSize(width, height);
+
+            // シーンを作成
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(bgColor);
+
+            // カメラを作成
+            const camera = new THREE.PerspectiveCamera(45, width / height);
+
+            const controls = new THREE.OrbitControls(camera, document.body);
+
+            // カメラの初期座標を設定
+            camera.position.set(1, 2, 5); //位置を指定
+            camera.lookAt(0, 0, 0); //見つめる方向
+
+
+            // 平行光源1
+            var directionalLight1 = new THREE.DirectionalLight(0xffffff);
+            directionalLight1.position.set(10, 10, 10);
+            // シーンに追加
+            scene.add(directionalLight1);
+            // 平行光源2
+            var directionalLight2 = new THREE.DirectionalLight(0x888888);
+            directionalLight2.position.set(-10, -10, 10);
+            // シーンに追加
+            scene.add(directionalLight2);
+
+            scene.fog = new THREE.Fog( 0xcccccc, 10, 15 );
+
+            // helper
+            const gridHelper = new THREE.GridHelper(2,10); // size, step
+            scene.add(gridHelper);
+            const axisHelper = new THREE.AxisHelper(2); //軸の長さ　X：赤、Y：緑、z：青
+            scene.add(axisHelper);
+
+            // 箱を作成
+            var geometry = new THREE.BoxGeometry(1, 1, 1);
+            var material = new THREE.MeshPhongMaterial({ transparent: false,wireframe:false, opacity:0.5, color: 'yellow'});
+            const grp = new THREE.Group();
+            const grp2 = new THREE.Group();
+            scene.add(grp);
+
+            // crate sphere circle(not complete)
+            // https://ics.media/tutorial-three/object3d_group/
+            for (let i = 0; i < 10; i++) {
+                // create sphere
+                const sphereMaterial = new THREE.MeshNormalMaterial();
+                const sphere = new THREE.SphereGeometry(3,3,3);
+                const sphereMesh = new THREE.Mesh(sphere, sphereMaterial);
+
+                // calc position
+                const rad = i / 10 * Math.PI * 2;
+                sphereMesh.position.set (
+                    20 * Math.cos(rad),
+                    3,
+                    20 * Math.sinh(rad),
+                );
+                grp2.add(sphereMesh);
+            }
+            scene.add(grp2);
+
+            var box1 = new THREE.Mesh(geometry, material);
+            box1.position.set(-2,0,0); //位置を指定
+            grp.add(box1);   // シーンに追加
+
+            var box2 = new THREE.Mesh(geometry, material);
+            box2.position.set(2,0,0); //位置を指定
+            grp.add(box2);   // シーンに追加
+
+            update();
+
+            // 毎フレーム時に実行されるループイベントです
+            function update() {
+                bgColor = document.getElementById('bgColor');
+
+                // レンダリング
+                renderer.render(scene, camera);
+
+                requestAnimationFrame(update);
+
+                // 箱を回転させる
+                grp.rotation.x += 0.01;
+                grp.rotation.y += 0.01;
+                box2.material.color.set(`hsl(${h},50%,50%)`);
+                // directionalLight1.color.set(`hsl(${h},50%,50%)`);
+                scene.background.set(bgColor.value);
+                if (h >= 255) {
+                    h = 0;
+                }
+                h += 0.5;
+                document.getElementById('h').textContent = `Box Hue : ${h}`;
+            }
+        }
+    </script>
+<body>
+
+
+<fieldset style="position: absolute; margin-bottom: 20px; bottom: 0">
+    <legend>Pref</legend>
+    <p id="h"></p>
+    <label><p>Background color</p><input type="color" id="bgColor" name="Color"></label>
+</fieldset>
+
+</body>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        color:white
+    }
+    #title {
+        position: absolute;
+    }
+
+</style>
+</html>
