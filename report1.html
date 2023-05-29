@@ -38,7 +38,7 @@
             // カメラを作成
             const camera = new THREE.PerspectiveCamera(45, width / height);
 
-            const controls = new THREE.OrbitControls(camera, document.body);
+        const controls = new THREE.OrbitControls(camera, document.getElementById("myCanvas"));
 
             // カメラの初期座標を設定
             camera.position.set(1, 2, 5); //位置を指定
@@ -109,29 +109,21 @@
 
                 requestAnimationFrame(update);
 
-                // 箱を回転させる
-                grp.rotation.x += 0.01;
-                grp.rotation.y += 0.01;
-                box2.material.color.set(`hsl(${h},50%,50%)`);
-                // directionalLight1.color.set(`hsl(${h},50%,50%)`);
-                scene.background.set(bgColor.value);
-                if (h >= 255) {
-                    h = 0;
-                }
-                h += 0.5;
-                document.getElementById('h').textContent = `Box Hue : ${h}`;
+            // 箱を回転させる
+            grp.rotation.x += params.grp.rotateSpeed;
+            grp.rotation.y += params.grp.rotateSpeed;
+            box2.material.color.set(`hsl(${h},50%,50%)`);
+            // directionalLight1.color.set(`hsl(${h},50%,50%)`);
+            if (h >= 255) {
+                h = 0;
             }
+            h += 0.5;
         }
-    </script>
+    }
+</script>
 <body>
-
-
-<fieldset style="position: absolute; margin-bottom: 20px; bottom: 0">
-    <legend>Pref</legend>
-    <p id="h"></p>
-    <label><p>Background color</p><input type="color" id="bgColor" name="Color"></label>
-</fieldset>
-
+<h1 id="title">Report1</h1>
+<canvas id="myCanvas"></canvas>
 </body>
 <style>
     body {
