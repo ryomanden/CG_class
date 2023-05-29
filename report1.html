@@ -12,28 +12,40 @@
     <script type="text/javascript"> writeHeader("./"); </script>
     <!-- /header -->
 </head>
-    <h1 id="title">Report1</h1>
-    <script>
-        window.addEventListener('DOMContentLoaded', init);
+<script>
+    window.addEventListener('DOMContentLoaded', init);
+    var GUI = lil.GUI;
+    let h = 0.0;
+    let rotateSpeed;
 
-        let h = 0.0;
-        let bgColor;
+    const params = {
+        bg: {
+            color: '#000000',
+        },
+        grp: {
+            rotateSpeed: 0.05,
+        }
+    };
 
-        function init() {
+    function init() {
+        const gui = new GUI();
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        // const width = 600;
+        // const height = 400;
 
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-            // const width = 600;
-            // const height = 400;
+        // レンダラーを作成
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#myCanvas')
+        });
+        renderer.setSize(width, height);
 
-            // レンダラーを作成
-            var renderer = new THREE.WebGLRenderer();
-            document.body.appendChild(renderer.domElement);
-            renderer.setSize(width, height);
+        // シーンを作成
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color("#000000");
 
-            // シーンを作成
-            const scene = new THREE.Scene();
-            scene.background = new THREE.Color(bgColor);
+        const background = gui.addFolder("BG");
+        background.addColor(params.bg, 'color').onChange(v => scene.background.set(v));
 
             // カメラを作成
             const camera = new THREE.PerspectiveCamera(45, width / height);
@@ -90,9 +102,11 @@
             }
             scene.add(grp2);
 
-            var box1 = new THREE.Mesh(geometry, material);
-            box1.position.set(-2,0,0); //位置を指定
-            grp.add(box1);   // シーンに追加
+        gui.add(params.grp,"rotateSpeed", 0.00, 0.10, 0.05);
+
+        var box1 = new THREE.Mesh(geometry, material);
+        box1.position.set(-2, 0, 0); //位置を指定
+        grp.add(box1);   // シーンに追加
 
             var box2 = new THREE.Mesh(geometry, material);
             box2.position.set(2,0,0); //位置を指定
@@ -100,12 +114,10 @@
 
             update();
 
-            // 毎フレーム時に実行されるループイベントです
-            function update() {
-                bgColor = document.getElementById('bgColor');
-
-                // レンダリング
-                renderer.render(scene, camera);
+        // 毎フレーム時に実行されるループイベントです
+        function update() {
+            // レンダリング
+            renderer.render(scene, camera);
 
                 requestAnimationFrame(update);
 
@@ -129,11 +141,6 @@
     body {
         margin: 0;
         padding: 0;
-        color:white
     }
-    #title {
-        position: absolute;
-    }
-
 </style>
 </html>
