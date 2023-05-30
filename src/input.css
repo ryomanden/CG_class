@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.index-btn {
+    @apply p-2 text-center link
+}
