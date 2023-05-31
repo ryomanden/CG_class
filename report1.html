@@ -233,14 +233,36 @@
         }
     }
 </script>
-<body>
-<h1 class="absolute top-5 left-3 text-white text-xl">Report1</h1>
-<canvas id="myCanvas"></canvas>
-</body>
 <style>
     body {
         margin: 0;
         padding: 0;
     }
 </style>
+<body>
+<h1 class="absolute top-5 left-3 text-white text-xl">Report1</h1>
+
+<!-- The button to open modal -->
+<label for="my-modal-3" class="btn absolute bottom-5 right-5"><i class="fa-solid fa-pen-to-square pr-1"></i> Note</label>
+<canvas id="myCanvas"></canvas>
+
+<!-- Put this part before </body> tag -->
+<input type="checkbox" id="my-modal-3" class="modal-toggle" />
+<div class="modal">
+    <div class="modal-box relative">
+        <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2">✕</label>
+        <h3 class="text-lg font-bold">第1回　レポート</h3>
+        <p class="py-4">図形を流体のようにするために、球体の頂点をノイズを用いて移動させた。<br>
+            マテリアルごとの特性を比較するため、またそのほかの値を変えながら観察できるよう、ページ上にUIを実装した。
+        </p>
+        <div class="py-4">
+            <h4 class="bg-base-content text-base-100 font-medium rounded-full w-fit py-0.5 px-1">参考</h4>
+            <ul class="list-disc ml-6 mt-2">
+                <li><a class="link-accent" href="https://ics.media/tutorial-three/object3d_group/">Three.jsで入れ子構造</a></li>
+                <li><a class="link-accent" href="https://steemit.com/utopian-io/@clayjohn/learning-3d-graphics-with-three-js-or-dynamic-geometry">Learning 3D Graphics With Three.js | Dynamic Geometry</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
 </html>
