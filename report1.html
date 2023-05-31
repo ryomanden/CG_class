@@ -14,6 +14,7 @@
     <!-- /header -->
 </head>
 <script>
+
     window.addEventListener('DOMContentLoaded', init);
     var GUI = lil.GUI;
     let h = 0.0;
@@ -39,6 +40,9 @@
             material: 'Normal',
             wireframe: false,
         },
+        spheregrp: {
+            visible: true,
+        }
     };
 
     function init() {
@@ -197,6 +201,10 @@
         fluidgui.add(params.fluid, "wireframe").onChange(v => fluid.material.wireframe = v);
         fluidgui.addColor(params.fluid, "color").onChange(v => fluid.material.color.set(v));
 
+        const spheregrp = gui.addFolder("Sphere group");
+        spheregrp.add(params.spheregrp, "visible").onChange(v => sphereGroup.visible = v);
+
+        // rotation box
         const boxgrpgui = gui.addFolder("Rotation Box");
         boxgrpgui.add(params.grp, "rotateSpeed", 0.00, 0.5, 0.01);
         boxgrpgui.add(params.grp, 'visible').onChange(v => boxGroup.visible = v);
