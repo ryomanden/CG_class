@@ -142,16 +142,40 @@
         function setMaterial(v) {
             switch (v) {
                 case 1:
-                    fluid.material = new THREE.MeshNormalMaterial();
+                    fluid.material = new THREE.MeshNormalMaterial({
+                        wireframe: params.fluid.wireframe,
+                        color: params.fluid.color,
+                    });
                     break;
                 case 2:
-                    fluid.material = new THREE.MeshLambertMaterial();
+                    fluid.material = new THREE.MeshLambertMaterial({
+                        wireframe: params.fluid.wireframe,
+                        color: params.fluid.color,
+                    });
                     break;
                 case 3:
-                    fluid.material = new THREE.MeshPhongMaterial();
+                    fluid.material = new THREE.MeshPhongMaterial({
+                        wireframe: params.fluid.wireframe,
+                        color: params.fluid.color,
+                    });
                     break;
                 case 4:
-                    fluid.material = new THREE.MeshStandardMaterial();
+                    fluid.material = new THREE.MeshStandardMaterial({
+                        wireframe: params.fluid.wireframe,
+                        color: params.fluid.color,
+                    });
+                    break;
+                case 5:
+                    fluid.material = new THREE.MeshToonMaterial({
+                        wireframe: params.fluid.wireframe,
+                        color: params.fluid.color,
+                    });
+                    break;
+                case 6:
+                    fluid.material = new THREE.MeshBasicMaterial({
+                       wireframe: params.fluid.wireframe,
+                       color: params.fluid.color,
+                    });
                     break;
             }
         }
