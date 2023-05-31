@@ -45,8 +45,6 @@
         const gui = new GUI();
         let width = window.innerWidth;
         let height = window.innerHeight;
-        // const width = 600;
-        // const height = 400;
 
         // レンダラーを作成
         const renderer = new THREE.WebGLRenderer({
@@ -195,8 +193,9 @@
         fluidgui.add(params.fluid, "k", 0, 10,0.1);
         fluidgui.add(params.fluid, "scale", 0, 20, 1);
         fluidgui.add(params.fluid, "speed", 0, 10, 0.1);
-        fluidgui.add(params.fluid, "material", {Normal:1,Lambert:2,Phong:3,Standard:4}).onChange(v => setMaterial(v));
+        fluidgui.add(params.fluid, "material", {Normal:1, Lambert:2, Phong:3, Standard:4, Toon:5, Basic:6}).onChange(v => setMaterial(v));
         fluidgui.add(params.fluid, "wireframe").onChange(v => fluid.material.wireframe = v);
+        fluidgui.addColor(params.fluid, "color").onChange(v => fluid.material.color.set(v));
 
         const boxgrpgui = gui.addFolder("Rotation Box");
         boxgrpgui.add(params.grp, "rotateSpeed", 0.00, 0.5, 0.01);
