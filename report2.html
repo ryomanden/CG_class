@@ -10,7 +10,6 @@
           "three/addons/": "https://unpkg.com/three@0.137.4/examples/jsm/"
         }
       }
-
     </script>
     <!-- Header -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"
@@ -54,16 +53,16 @@
 
         const controls = new OrbitControls(camera, document.getElementById("canvas"));
         // カメラの初期座標を設定
-        camera.position.set(0, 0, 10); //位置を指定
+        camera.position.set(0, 0, 20); //位置を指定
 
         const gltfLoader = new GLTFLoader();
         gltfLoader.load(
-            './models/car(NoShadow).glb',
+            './models/car(NoFloor,Shadow).glb',
             function (gltf) {
                 const model = gltf.scene;
                 model.traverse((obj) => {
                     if (obj.type === 'Mesh') {
-                        obj.receiveShadow = true;
+                        // obj.receiveShadow = true;
                         obj.castShadow = true;
                     }
                     // else if (obj.type === 'PointLight') {
@@ -79,7 +78,7 @@
                 })
                 scene.add(gltf.scene);
             }
-        )
+        );
 
         // create box object
         // var geometry = new THREE.BoxGeometry(1, 1, 1);
