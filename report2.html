@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>report2</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.137.4/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.137.4/examples/jsm/"
+        }
+      }
+
+    </script>
+    <!-- Header -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"
+            integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="style.js"></script>
+    <script type="text/javascript"> writeHeader("./"); </script>
+    <!-- /header -->
+</head>
+<script type="module">
+    import * as THREE from "three";
+    import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+    var init = function () {
+
+        // get screen size
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        // create renderer
+        var renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#canvas'),
+            antialias: true
+        });
+
+        renderer.setSize(width, height);
+
+        renderer.physicallyCorrectLights = true;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.shadowMap.enabled = true;
+
+        document.body.appendChild(renderer.domElement);
+
+        // create scene
+        var scene = new THREE.Scene();
+        scene.background = new THREE.Color("#888888");
+
+        // create camera
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+
+        const controls = new OrbitControls(camera, document.getElementById("canvas"));
+        // カメラの初期座標を設定
+        camera.position.set(0, 0, 10); //位置を指定
+
+        const gltfLoader = new GLTFLoader();
+        gltfLoader.load(
+            './models/car(NoShadow).glb',
+            function (gltf) {
+                const model = gltf.scene;
+                model.traverse((obj) => {
+                    if (obj.type === 'Mesh') {
+                        obj.receiveShadow = true;
+                        obj.castShadow = true;
+                    }
+                    // else if (obj.type === 'PointLight') {
+                    //     obj.castShadow = true;
+                    //     const shadowSize = 20;
+                    //     obj.shadow.camera.right = shadowSize;
+                    //     obj.shadow.camera.left = -shadowSize;
+                    //     obj.shadow.camera.top = -shadowSize;
+                    //     obj.shadow.camera.bottom = shadowSize;
+                    //
+                    //     obj.shadow.mapSize.set(4096, 4096);
+                    // }
+                })
+                scene.add(gltf.scene);
+            }
+        )
+
+        // create box object
+        // var geometry = new THREE.BoxGeometry(1, 1, 1);
+        // var material = new THREE.MeshPhongMaterial({ color: 0x5666ff });
+        // var box = new THREE.Mesh(geometry, material);
+        // box.position.z = 0;
+        // scene.add(box);
+
+        //ambient light
+        const light = new THREE.AmbientLight(0xffffff,0.3);
+        scene.add(light);
+
+        // light1
+        var directionalLight1 = new THREE.PointLight(0xffffff,10);
+        directionalLight1.position.set(4, 4, 3);
+        directionalLight1.castShadow = true;
+
+        const shadowSize = 20;
+        directionalLight1.shadow.camera.right = shadowSize;
+        directionalLight1.shadow.camera.left = -shadowSize;
+        directionalLight1.shadow.camera.top = -shadowSize;
+        directionalLight1.shadow.camera.bottom = shadowSize;
+
+        directionalLight1.shadow.mapSize.set(4096, 4096);
+        // add scene
+        scene.add(directionalLight1);
+
+        // light2
+        var directionalLight2 = new THREE.PointLight(0xFF9C19,10);
+        directionalLight2.position.set(-5, 5, -5);
+        directionalLight2.castShadow = true;
+
+        directionalLight2.shadow.camera.right = shadowSize;
+        directionalLight2.shadow.camera.left = -shadowSize;
+        directionalLight2.shadow.camera.top = -shadowSize;
+        directionalLight2.shadow.camera.bottom = shadowSize;
+
+        directionalLight2.shadow.mapSize.set(4096, 4096);
+        // add scene
+        scene.add(directionalLight2);
+
+        // helper
+        const gridHelper = new THREE.GridHelper(2, 10); // size, step
+        scene.add(gridHelper);
+        const axisHelper = new THREE.AxisHelper(2); //軸の長さ　X：赤、Y：緑、z：青
+        scene.add(axisHelper);
+
+        // run first-time
+        var update = function () {
+            requestAnimationFrame(update);
+
+            // rotate box
+            // box.rotation.x += 0.01;
+            // box.rotation.y += 0.01;
+
+            renderer.render(scene, camera);
+        };
+        update();
+    }
+    window.addEventListener('DOMContentLoaded', init);
+</script>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+</style>
+<body>
+<h1 class="absolute top-5 left-3 text-white text-xl">Report2</h1>
+<!-- The button to open modal -->
+<label for="my-modal-3" class="btn absolute bottom-5 right-5"><i class="fa-solid fa-pen-to-square pr-1"></i>
+    Note</label>
+<canvas id="canvas"></canvas>
+
+<!-- Put this part before </body> tag -->
+<input type="checkbox" id="my-modal-3" class="modal-toggle"/>
+<div class="modal">
+    <div class="modal-box relative">
+        <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                class="fa-solid fa-xmark"></i></label>
+        <h3 class="text-lg font-bold">第2回　レポート</h3>
+        <p class="py-4">図形を流体のようにするために、球体の頂点をノイズを用いて移動させた。<br>
+            マテリアルごとの特性を比較するため、またそのほかの値を変えながら観察できるよう、ページ上にUIを実装した。<br>
+            また、Fogも追加してみたが、思ったようなfogにならなかったので、検証が必要であると感じた。<br>
+            <br>
+            今後は、cameraの被写界深度を使ってみたり、shaderを書いてみたい。
+        </p>
+        <div class="py-4">
+            <h4 class="bg-base-content text-base-100 font-medium rounded-full w-fit py-0.5 px-1 text-sm">参考</h4>
+            <ul class="list-disc ml-6 mt-2">
+                <li><a class="link-accent"
+                       href="https://ics.media/tutorial-three/object3d_group/">Three.jsで入れ子構造</a></li>
+                <li><a class="link-accent"
+                       href="https://steemit.com/utopian-io/@clayjohn/learning-3d-graphics-with-three-js-or-dynamic-geometry">Learning
+                    3D Graphics With Three.js | Dynamic Geometry</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>
