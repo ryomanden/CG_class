@@ -11,6 +11,7 @@
         }
       }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.18"></script>
     <!-- Header -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
@@ -19,11 +20,27 @@
     <!-- /header -->
 </head>
 <script type="module">
+    /* --- IMPORT --- */
     import * as THREE from "three";
     import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
+    // lil-gui Params
+    var GUI = lil.GUI;
+    const params = {
+        bg: {
+            color: "#464646",
+        },
+        camera: {
+            rotateSpeed: 1,
+        },
+        helper: {
+            axisHelper: false,
+        },
+    };
+
     var init = function () {
+        const gui = new GUI();
 
         // get screen size
         let width = window.innerWidth;
@@ -56,7 +73,7 @@
         camera.position.set(0, 5, 15); // initial position
         controls.enableDamping = true;
         controls.autoRotate = true;
-        controls.autoRotateSpeed = 0.7;
+        controls.autoRotateSpeed = params.camera.rotateSpeed;
 
         // shadow Props
         const shadowProps = function(light,size)  {
@@ -146,12 +163,25 @@
         const gridHelper = new THREE.GridHelper(2, 10); // size, step
         scene.add(gridHelper);
         const axisHelper = new THREE.AxisHelper(4);
+        axisHelper.visible = params.helper.axisHelper;
         scene.add(axisHelper);
 
-        // run first-time
-        var update = function () {
-            requestAnimationFrame(update);
-            renderer.render(scene, camera);
+        /* --- USER INTERFACE --- */
+        // background
+        const bgUIGroup = gui.addFolder("Background");
+        bgUIGroup.addColor(params.bg, 'color').onChange(v => scene.background.set(v));
+
+        // camera
+        const cameraUIGroup = gui.addFolder("Camera");
+        cameraUIGroup.add(params.camera, 'rotateSpeed', 0, 10, 0.1).onChange(v => controls.autoRotateSpeed = v);
+
+        // helper
+        const helperUIGroup = gui.addFolder("Helper");
+        helperUIGroup.add(params.helper, 'axisHelper').onChange(v => axisHelper.visible = v);
+
+        // run every-frame
+        update();
+        function update  () {
 
             // camera auto rotate
             controls.update();
@@ -160,8 +190,11 @@
             if(mixer){
                 mixer.update(clock.getDelta());
             }
+
+            // rendering
+            requestAnimationFrame(update);
+            renderer.render(scene, camera);
         };
-        update();
     }
     window.addEventListener('DOMContentLoaded', init);
 </script>
