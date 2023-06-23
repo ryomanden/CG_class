@@ -46,14 +46,17 @@
 
         // create scene
         var scene = new THREE.Scene();
-        scene.background = new THREE.Color("#888888");
+        scene.background = new THREE.Color("#464646");
 
         // create camera
         const camera = new THREE.PerspectiveCamera(45, width / height);
-
         const controls = new OrbitControls(camera, document.getElementById("canvas"));
-        // カメラの初期座標を設定
-        camera.position.set(0, 0, 20); //位置を指定
+
+        // camera Props
+        camera.position.set(0, 5, 15); // initial position
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.7;
 
         // shadow Props
         const shadowProps = function(light,size)  {
@@ -119,25 +122,25 @@
         const anvLight = new THREE.AmbientLight(0xffffff,3);
         scene.add(anvLight);
 
-        // light1
-        const Light1 = new THREE.PointLight(0xffffff,10);
-        Light1.position.set(4, 4, 3);
-        Light1.shadow.radius=10;
-        shadowProps(Light1,20);
-            // add scene
-        scene.add(Light1);
-        const Light1_helpder = new THREE.PointLightHelper(Light1,1)
-        scene.add(Light1_helpder);
-
-        // light2
-        const Light2 = new THREE.PointLight(0xFF9C19,10);
-        Light2.position.set(-5, 5, -5);
-        Light2.shadow.radius=10;
-        shadowProps(Light2,20);
-            // add scene
-        scene.add(Light2);
-        const Light2_helper = new THREE.PointLightHelper(Light2,1);
-        scene.add(Light2_helper);
+        // // light1
+        // const Light1 = new THREE.PointLight(0xffffff,0);
+        // Light1.position.set(4, 4, 3);
+        // Light1.shadow.radius=10;
+        // shadowProps(Light1,20);
+        //     // add scene
+        // scene.add(Light1);
+        // const Light1_helpder = new THREE.PointLightHelper(Light1,1)
+        // scene.add(Light1_helpder);
+        //
+        // // light2
+        // const Light2 = new THREE.PointLight(0xFF9C19,0);
+        // Light2.position.set(-5, 5, -5);
+        // Light2.shadow.radius=10;
+        // shadowProps(Light2,20);
+        //     // add scene
+        // scene.add(Light2);
+        // const Light2_helper = new THREE.PointLightHelper(Light2,1);
+        // scene.add(Light2_helper);
 
         // helper
         const gridHelper = new THREE.GridHelper(2, 10); // size, step
@@ -149,6 +152,9 @@
         var update = function () {
             requestAnimationFrame(update);
             renderer.render(scene, camera);
+
+            // camera auto rotate
+            controls.update();
 
             // run animation mixer
             if(mixer){
