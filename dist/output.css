@@ -7659,9 +7659,18 @@ html {
   margin: 0.5rem;
 }
 
+.m-3 {
+  margin: 0.75rem;
+}
+
 .-mx-6 {
   margin-left: -1.5rem;
   margin-right: -1.5rem;
+}
+
+.my-1 {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .my-auto {
@@ -7687,6 +7696,10 @@ html {
 
 .mt-2 {
   margin-top: 0.5rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
 }
 
 .mt-auto {
@@ -7792,6 +7805,10 @@ html {
   display: none;
 }
 
+.h-0 {
+  height: 0px;
+}
+
 .h-1 {
   height: 0.25rem;
 }
@@ -7819,6 +7836,10 @@ html {
 
 .w-20 {
   width: 5rem;
+}
+
+.w-7 {
+  width: 1.75rem;
 }
 
 .w-fit {
@@ -11325,6 +11346,11 @@ html {
   color: hsl(var(--nf, var(--n)) / var(--tw-text-opacity));
 }
 
+.text-pink-200 {
+  --tw-text-opacity: 1;
+  color: rgb(251 207 232 / var(--tw-text-opacity));
+}
+
 .text-primary {
   --tw-text-opacity: 1;
   color: hsl(var(--p) / var(--tw-text-opacity));
@@ -12572,8 +12598,56 @@ html {
   content: var(--tw-content);
 }
 
+.\[j\:\<\FFFD\/\FFFD\FFFD\FFFD AL\FFFD\FFFD\] {
+  j: <�/���AL��;
+}
+
+.\[k\:Z\FFFD\FFFD\FFFD\1C\FFFD\FFFD\.q\FFFD\FFFD\B3BCW\FFFD\6EE\!\FFFDiu\FFFD 0\] {
+  k: Z�����.q��뎼W�ۮ!�iu�0;
+}
+
+.\[o\:\FFFD Db\FFFD 34\] {
+  o: �Db�34;
+}
+
+.\[s\:\FFFD\FFFD\=\7S\FFFDX\FFFD\] {
+  s: ��=S�X�;
+}
+
 .\[v\:\FFFD Cbu\FFFDt\FFFDz\FFFD\FFFD\13\FFFD\2c \FFFD\FFFD\] {
   v: �Cbu�t�z���,��;
+}
+
+.\[v\:\FFFD\FFFDG2\2B8_\FFFDz\FFFD\] {
+  v: ��G2ʸ �z�;
+}
+
+.index-wrap {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.index-title {
+  text-align: center;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.index-h2 {
+  margin-top: 0.75rem;
+  text-align: center;
+  --tw-text-opacity: 1;
+  color: rgb(251 207 232 / var(--tw-text-opacity));
+}
+
+.index-btn-list {
+  margin: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .index-btn {
@@ -12594,6 +12668,11 @@ html {
 .index-btn {
   padding: 0.5rem;
   text-align: center;
+}
+
+.index-btn:hover {
+  --tw-text-opacity: 1;
+  color: rgb(244 114 182 / var(--tw-text-opacity));
 }
 
 .table .hover\:hover:hovertr:hover th,
@@ -12662,6 +12741,11 @@ html {
 
 .hover\:font-bold:hover {
   font-weight: 700;
+}
+
+.hover\:text-pink-400:hover {
+  --tw-text-opacity: 1;
+  color: rgb(244 114 182 / var(--tw-text-opacity));
 }
 
 .before\:hover\:text-center:hover::before {

@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+.index-wrap {
+    @apply h-screen w-screen flex justify-center flex-col
+}
+.index-title {
+    @apply text-center text-2xl
+}
+.index-h2 {
+    @apply text-center mt-3 text-pink-200
+}
+.index-btn-list {
+    @apply m-2 flex justify-center flex-col
+}
 .index-btn {
-    @apply p-2 text-center link
+    @apply p-2 text-center link hover:text-pink-400
 }
