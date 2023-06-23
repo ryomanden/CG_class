@@ -55,6 +55,16 @@
         // カメラの初期座標を設定
         camera.position.set(0, 0, 20); //位置を指定
 
+        // shadow Props
+        const shadowProps = function(light,size)  {
+            light.shadow.camera.right = size;
+            light.shadow.camera.left = -size;
+            light.shadow.camera.top = -size;
+            light.shadow.camera.bottom = size;
+            light.shadow.mapSize.set(4096, 4096);
+            light.castShadow = true;
+        }
+
         const gltfLoader = new GLTFLoader();
         gltfLoader.load(
             './models/car(NoFloor,Shadow).glb',
@@ -88,38 +98,31 @@
         floor.receiveShadow = true;
         scene.add(floor);
 
-        //ambient light
-        const light = new THREE.AmbientLight(0xffffff,0.3);
-        scene.add(light);
+        // ambient light
+        const anvLight = new THREE.AmbientLight(0xffffff,3);
+        scene.add(anvLight);
 
         // light1
-        var directionalLight1 = new THREE.PointLight(0xffffff,10);
-        directionalLight1.position.set(4, 4, 3);
-        directionalLight1.castShadow = true;
+        const Light1 = new THREE.PointLight(0xffffff,10);
+        Light1.position.set(4, 4, 3);
+        Light1.shadow.radius=10;
+        shadowProps(Light1,20);
 
-        const shadowSize = 20;
-        directionalLight1.shadow.camera.right = shadowSize;
-        directionalLight1.shadow.camera.left = -shadowSize;
-        directionalLight1.shadow.camera.top = -shadowSize;
-        directionalLight1.shadow.camera.bottom = shadowSize;
-
-        directionalLight1.shadow.mapSize.set(4096, 4096);
         // add scene
-        scene.add(directionalLight1);
+        scene.add(Light1);
+        const Light1_helpder = new THREE.PointLightHelper(Light1,1)
+        scene.add(Light1_helpder);
 
         // light2
-        var directionalLight2 = new THREE.PointLight(0xFF9C19,10);
-        directionalLight2.position.set(-5, 5, -5);
-        directionalLight2.castShadow = true;
+        const Light2 = new THREE.PointLight(0xFF9C19,10);
+        Light2.position.set(-5, 5, -5);
+        Light2.shadow.radius=10;
+        shadowProps(Light2,20);
 
-        directionalLight2.shadow.camera.right = shadowSize;
-        directionalLight2.shadow.camera.left = -shadowSize;
-        directionalLight2.shadow.camera.top = -shadowSize;
-        directionalLight2.shadow.camera.bottom = shadowSize;
-
-        directionalLight2.shadow.mapSize.set(4096, 4096);
         // add scene
-        scene.add(directionalLight2);
+        scene.add(Light2);
+        const Light2_helper = new THREE.PointLightHelper(Light2,1);
+        scene.add(Light2_helper);
 
         // helper
         const gridHelper = new THREE.GridHelper(2, 10); // size, step
