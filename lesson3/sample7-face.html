@@ -50,8 +50,15 @@
         // テクスチャー読み込み
         var textureLoader = new THREE.TextureLoader();  
         var texture = textureLoader.load("face.jpg");
+
+        var normalTexture = new THREE.TextureLoader().load(
+            'normal.jpg'
+        );
         var mat = new THREE.MeshPhongMaterial();
         mat.map = texture;
+        mat.normalMap = normalTexture;
+        mat.normalScale.set(5,5)
+
 
         // 箱を作成
         var geometry = new THREE.BoxGeometry(1, 1, 1);
