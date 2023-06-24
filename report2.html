@@ -12,6 +12,9 @@
       }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.18"></script>
+    <audio id="music" loop preload="auto" style="display: none">
+        <source src="sounds/car_engine_loop.mp3">
+    </audio>
     <!-- Header -->
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"
             integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
@@ -72,8 +75,12 @@
         const camera = new THREE.PerspectiveCamera(45, width / height);
         const controls = new OrbitControls(camera, document.getElementById("canvas"));
 
+        // audio listener
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
+
         // camera Props
-        camera.position.set(0, 5, 15); // initial position
+        camera.position.set(10, 10, 10); // initial position
         controls.enableDamping = true;
         controls.autoRotate = true;
         controls.autoRotateSpeed = params.camera.rotateSpeed;
@@ -136,6 +143,23 @@
         // floor.receiveShadow = true;
         // scene.add(floor);
 
+        // sound object
+        const soundGeometry = new THREE.SphereGeometry(0.1,15,15);
+        const material = new THREE.MeshPhongMaterial({color: 0xffffff});
+
+
+        /* --- SOUND --- */
+        const engine = new THREE.Mesh(soundGeometry,material);
+        engine.position.set(0,0.7,2);
+        scene.add(engine);
+
+        const sound = new THREE.PositionalAudio(listener);
+        const songElement = document.getElementById( 'music' );
+        sound.setMediaElementSource(songElement);
+        sound.setRefDistance(2);
+        sound.setDistanceModel("exponential");
+        songElement.play();
+        engine.add(sound);
 
         /* --- LIGHT --- */
         // ambient light
