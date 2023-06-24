@@ -46,6 +46,7 @@
 
     var init = function () {
         const gui = new GUI();
+        document.getElementById('overlay').remove();
 
         // get screen size
         let width = window.innerWidth;
@@ -227,7 +228,7 @@
             renderer.render(scene, camera);
         };
     }
-    window.addEventListener('DOMContentLoaded', init);
+    document.getElementById('PLAY').addEventListener('click', init);
 </script>
 <style>
     body {
@@ -242,6 +243,12 @@
 <label for="my-modal-3" class="btn absolute bottom-5 right-5"><i class="fa-solid fa-pen-to-square pr-1"></i>
     Note</label>
 <canvas id="canvas"></canvas>
+
+<div id="overlay" class="top-0 left-0 w-screen h-screen flex justify-center items-center fixed ">
+    <button id="PLAY" class="btn btn-outline">
+        PLAY!
+    </button>
+</div>
 
 <!-- Report modal -->
 <input type="checkbox" id="my-modal-3" class="modal-toggle"/>
