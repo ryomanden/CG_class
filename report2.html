@@ -36,6 +36,8 @@
         },
         helper: {
             axisHelper: false,
+            light1helper: false,
+            light2helper: false,
         },
     };
 
@@ -52,6 +54,7 @@
             antialias: true
         });
         renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio); // Retina support
 
         // renderer Props
         renderer.physicallyCorrectLights = true;
@@ -139,25 +142,27 @@
         const anvLight = new THREE.AmbientLight(0xffffff,3);
         scene.add(anvLight);
 
-        // // light1
-        // const Light1 = new THREE.PointLight(0xffffff,0);
-        // Light1.position.set(4, 4, 3);
-        // Light1.shadow.radius=10;
-        // shadowProps(Light1,20);
-        //     // add scene
-        // scene.add(Light1);
-        // const Light1_helpder = new THREE.PointLightHelper(Light1,1)
-        // scene.add(Light1_helpder);
-        //
-        // // light2
-        // const Light2 = new THREE.PointLight(0xFF9C19,0);
-        // Light2.position.set(-5, 5, -5);
-        // Light2.shadow.radius=10;
-        // shadowProps(Light2,20);
-        //     // add scene
-        // scene.add(Light2);
-        // const Light2_helper = new THREE.PointLightHelper(Light2,1);
-        // scene.add(Light2_helper);
+        // light1
+        const Light1 = new THREE.PointLight(0xffffff,1);
+        Light1.position.set(4, 4, 3);
+        Light1.shadow.radius=10;
+        shadowProps(Light1,20);
+            // add scene
+        scene.add(Light1);
+        const Light1_helper = new THREE.PointLightHelper(Light1,1);
+        Light1_helper.visible = params.helper.light1helper;
+        scene.add(Light1_helper);
+        // light2
+
+        const Light2 = new THREE.PointLight(0xFF9C19,1);
+        Light2.position.set(-5, 5, -5);
+        Light2.shadow.radius=10;
+        shadowProps(Light2,20);
+        // add scene
+        scene.add(Light2);
+        const Light2_helper = new THREE.PointLightHelper(Light2,1);
+        Light2_helper.visible = params.helper.light2helper;
+        scene.add(Light2_helper);
 
         // helper
         const gridHelper = new THREE.GridHelper(2, 10); // size, step
@@ -178,6 +183,8 @@
         // helper
         const helperUIGroup = gui.addFolder("Helper");
         helperUIGroup.add(params.helper, 'axisHelper').onChange(v => axisHelper.visible = v);
+        helperUIGroup.add(params.helper, 'light1helper').onChange(v => Light1_helper.visible = v);
+        helperUIGroup.add(params.helper, 'light2helper').onChange(v => Light2_helper.visible = v);
 
         // run every-frame
         update();
