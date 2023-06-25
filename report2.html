@@ -212,6 +212,8 @@
             renderer.render(scene, camera);
         };
     }
+
+    // load when button is clicked
     document.getElementById('PLAY').addEventListener('click', init);
 </script>
 <style>
@@ -224,14 +226,15 @@
 <!-- Page title -->
 <h1 class="absolute top-5 left-3 text-white text-xl">Report2</h1>
 <!-- The button to open modal -->
-<label for="my-modal-3" class="btn absolute bottom-5 right-5"><i class="fa-solid fa-pen-to-square pr-1"></i>
+<label for="my-modal-3" class="btn absolute bottom-5 right-5 drop-shadow-xl"><i class="fa-solid fa-pen-to-square pr-1"></i>
     Note</label>
 <canvas id="canvas"></canvas>
 
-<div id="overlay" class="top-0 left-0 w-screen h-screen flex justify-center items-center fixed ">
+<div id="overlay" class="top-0 left-0 w-screen h-screen flex flex-col justify-center items-center fixed backdrop-blur">
     <button id="PLAY" class="btn btn-outline">
         PLAY!
     </button>
+    <p class="text-sm mt-2 ">※音、あります。</p>
 </div>
 
 <!-- Report modal -->
