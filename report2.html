@@ -28,6 +28,10 @@
     import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 
+    // status ui
+    import Stats from 'three/addons/libs/stats.module.js';
+    let stats;
+
     // lil-gui Params
     var GUI = lil.GUI;
     const params = {
@@ -253,10 +257,18 @@
         presetGroup.add(preset, 'reset');
 
         // status
+        const container = document.createElement( 'div' );
+        container.id = "container";
+        document.body.appendChild( container );
+        stats = new Stats();
+        container.appendChild( stats.dom );
 
         // run every-frame
         update();
         function update  () {
+
+            // status update
+            stats.update();
 
             // camera auto rotate
             controls.update();
@@ -279,6 +291,10 @@
     body {
         margin: 0;
         padding: 0;
+    }
+    #container canvas{
+        margin-top: 90px;
+        position: relative;
     }
 </style>
 <body>
