@@ -37,6 +37,13 @@
         camera: {
             rotateSpeed: 1,
         },
+        light: {
+            ambientIntensity: 3,
+            Light1Intensity: 1,
+            Light1Color: "#ffffff",
+            Light2Intensity: 1,
+            Light2Color: "#FF9C19",
+        },
         helper: {
             axisHelper: false,
             light1helper: false,
@@ -146,11 +153,11 @@
 
 /* --- LIGHT --- */
         // ambient light
-        const anvLight = new THREE.AmbientLight(0xffffff,3);
+        const anvLight = new THREE.AmbientLight(0xffffff,params.light.ambientIntensity);
         scene.add(anvLight);
 
         // light1
-        const Light1 = new THREE.PointLight(0xffffff,1);
+        const Light1 = new THREE.PointLight(params.light.Light1Color, params.light.Light1Intensity);
         Light1.position.set(4, 4, 3);
         Light1.shadow.radius=10;
         shadowProps(Light1,20);
@@ -161,8 +168,7 @@
         scene.add(Light1_helper);
 
         // light2
-
-        const Light2 = new THREE.PointLight(0xFF9C19,1);
+        const Light2 = new THREE.PointLight(params.light.Light2Color,params.light.Light2Intensity);
         Light2.position.set(-5, 5, -5);
         Light2.shadow.radius=10;
         shadowProps(Light2,20);
@@ -188,11 +194,65 @@
         const cameraUIGroup = gui.addFolder("Camera");
         cameraUIGroup.add(params.camera, 'rotateSpeed', 0, 10, 0.1).onChange(v => controls.autoRotateSpeed = v);
 
+        // light
+        const lightUIGroup = gui.addFolder("Light");
+        lightUIGroup.add(params.light, 'ambientIntensity', 0, 30, 0.1).listen().onChange(v => anvLight.intensity = v);
+        lightUIGroup.add(params.light, 'Light1Intensity', 0, 30, 0.1).listen().onChange(v => Light1.intensity = v);
+        lightUIGroup.addColor(params.light, 'Light1Color').listen().onChange(v => Light1.color.set(v));
+        lightUIGroup.add(params.light, 'Light2Intensity', 0, 30, 0.1).listen().onChange(v => Light2.intensity = v);
+        lightUIGroup.addColor(params.light, 'Light2Color').listen().onChange(v => Light2.color.set(v));
+
         // helper
         const helperUIGroup = gui.addFolder("Helper");
         helperUIGroup.add(params.helper, 'axisHelper').onChange(v => axisHelper.visible = v);
         helperUIGroup.add(params.helper, 'light1helper').onChange(v => Light1_helper.visible = v);
         helperUIGroup.add(params.helper, 'light2helper').onChange(v => Light2_helper.visible = v);
+
+        // preset
+        const preset = {
+            dayLight: function () {
+                anvLight.intensity = 5;
+                Light1.intensity = 3;
+                Light1.color.set('#ffffff');
+                Light2.intensity = 3;
+                Light2.color.set('#ff9c19');
+                params.light.ambientIntensity = 5;
+                params.light.Light1Intensity = 3;
+                params.light.Light1Color = '#ffffff';
+                params.light.Light2Intensity = 3;
+                params.light.Light2Color = '#ff9c19';
+            },
+            night: function () {
+                anvLight.intensity = 0.9;
+                Light1.intensity = 7;
+                Light1.color.set('#ff5900');
+                Light2.intensity = 15;
+                Light2.color.set('#ff9c19');
+                params.light.ambientIntensity = 0.9;
+                params.light.Light1Intensity = 7;
+                params.light.Light1Color = '#ff5900';
+                params.light.Light2Intensity = 15;
+                params.light.Light2Color = '#ff9c19';
+            },
+            reset: function () {
+                anvLight.intensity = 3;
+                Light1.intensity = 1;
+                Light1.color.set('#ffffff');
+                Light2.intensity = 1;
+                Light2.color.set('#ff9c19');
+                params.light.ambientIntensity = 3;
+                params.light.Light1Intensity = 1;
+                params.light.Light1Color = '#ffffff';
+                params.light.Light2Intensity = 1;
+                params.light.Light2Color = '#ff9c19';
+            },
+        }
+        const presetGroup = gui.addFolder("Presets");
+        presetGroup.add(preset, 'dayLight');
+        presetGroup.add(preset, 'night');
+        presetGroup.add(preset, 'reset');
+
+        // status
 
         // run every-frame
         update();
