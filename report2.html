@@ -46,6 +46,8 @@
 
     var init = function () {
         const gui = new GUI();
+
+        // remove play button
         document.getElementById('overlay').remove();
 
         // get screen size
@@ -81,8 +83,9 @@
         camera.add(listener);
 
         // camera Props
-        camera.position.set(10, 10, 10); // initial position
+        camera.position.set(10, 10, 8); // initial position
         controls.enableDamping = true;
+        controls.dampingFactor = 1;
         controls.autoRotate = true;
         controls.autoRotateSpeed = params.camera.rotateSpeed;
 
