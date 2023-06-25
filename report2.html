@@ -23,7 +23,7 @@
     <!-- /header -->
 </head>
 <script type="module">
-    /* --- IMPORT --- */
+/* --- IMPORT --- */
     import * as THREE from "three";
     import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
@@ -99,8 +99,7 @@
             light.castShadow = true;
         }
 
-        /* --- OBJECT --- */
-
+/* --- OBJECT --- */
         // load car object
         const gltfLoader = new GLTFLoader();
         let mixer;
@@ -132,8 +131,7 @@
         const soundGeometry = new THREE.SphereGeometry(0.1,15,15);
         const material = new THREE.MeshPhongMaterial({color: 0xffffff});
 
-
-        /* --- SOUND --- */
+/* --- SOUND --- */
         const engine = new THREE.Mesh(soundGeometry,material);
         engine.position.set(0,0.7,2);
         scene.add(engine);
@@ -146,7 +144,7 @@
         songElement.play();
         engine.add(sound);
 
-        /* --- LIGHT --- */
+/* --- LIGHT --- */
         // ambient light
         const anvLight = new THREE.AmbientLight(0xffffff,3);
         scene.add(anvLight);
@@ -161,13 +159,14 @@
         const Light1_helper = new THREE.PointLightHelper(Light1,1);
         Light1_helper.visible = params.helper.light1helper;
         scene.add(Light1_helper);
+
         // light2
 
         const Light2 = new THREE.PointLight(0xFF9C19,1);
         Light2.position.set(-5, 5, -5);
         Light2.shadow.radius=10;
         shadowProps(Light2,20);
-        // add scene
+            // add scene
         scene.add(Light2);
         const Light2_helper = new THREE.PointLightHelper(Light2,1);
         Light2_helper.visible = params.helper.light2helper;
@@ -180,7 +179,7 @@
         axisHelper.visible = params.helper.axisHelper;
         scene.add(axisHelper);
 
-        /* --- USER INTERFACE --- */
+/* --- USER INTERFACE --- */
         // background
         const bgUIGroup = gui.addFolder("Background");
         bgUIGroup.addColor(params.bg, 'color').onChange(v => scene.background.set(v));
@@ -243,9 +242,9 @@
     <div class="modal-box relative">
         <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"><i
                 class="fa-solid fa-xmark"></i></label>
-        <!-- Title -->
+<!-- Title -->
         <h3 class="text-lg font-bold">第2回　レポート</h3>
-        <!-- Content -->
+<!-- Content -->
         <p class="py-4">
             ここに本文
         </p>
