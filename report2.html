@@ -150,7 +150,7 @@
         const sound = new THREE.PositionalAudio(listener);
         const songElement = document.getElementById( 'music' );
         sound.setMediaElementSource(songElement);
-        sound.setRefDistance(2);
+        sound.setRefDistance(5);
         sound.setDistanceModel("exponential");
         songElement.play();
         engine.add(sound);
@@ -293,7 +293,8 @@
         padding: 0;
     }
     #container canvas{
-        margin-top: 90px;
+        margin-top: 70px;
+        margin-left: 10px;
         position: relative;
     }
 </style>
@@ -322,17 +323,23 @@
         <h3 class="text-lg font-bold">第2回　レポート</h3>
 <!-- Content -->
         <p class="py-4">
-            ここに本文
+            Blenderでモデルを作成し、glTF形式のモデルデータをThree.JSで読み込みました。
+            <br>
+            <br>
+            Blenderでベイク処理を行い、モデル・アニメーションと共にglbファイルで書き出しました。
+            <br>
+            <br>
+            地面にディスプレイスメントマップを施したかったのですが、きれいに描画される量のポリゴン数では重すぎたので、今回は断念しました。
+            <br>
+            <br>
+            工夫した点は、エンジンルームから音を出すことと、環境工とポイントライトを調整しながらベイク処理の効果を実験できるようにしたことです。
         </p>
         <div class="py-4">
             <h4 class="bg-base-content text-base-100 font-medium rounded-full w-fit py-0.5 px-1 text-sm">参考</h4>
             <ul class="list-disc ml-6 mt-2">
 <!-- Citation -->
                 <li><a class="link-accent"
-                       href="https://ics.media/tutorial-three/object3d_group/">Three.jsで入れ子構造</a></li>
-                <li><a class="link-accent"
-                       href="https://steemit.com/utopian-io/@clayjohn/learning-3d-graphics-with-three-js-or-dynamic-geometry">Learning
-                    3D Graphics With Three.js | Dynamic Geometry</a></li>
+                       href="https://github.com/donmccurdy/three-gltf-viewer">donmccurdy/three-gltf-viewer | GitHub</a></li>
             </ul>
         </div>
     </div>
