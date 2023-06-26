@@ -124,7 +124,7 @@
                     if (obj.type === 'Mesh') {
                         obj.castShadow = true;
                     }
-                })
+                });
                 scene.add(gltf.scene);
 
                 // set animation mixer
@@ -133,7 +133,7 @@
                     let animation = animations[1];
                     let action = mixer.clipAction(animation);
                     action.setLoop(THREE.LoopRepeat);
-                    action.play()
+                    action.play();
                 }
             }
         );
@@ -299,50 +299,53 @@
     }
 </style>
 <body>
-<!-- Page title -->
-<h1 class="absolute top-5 left-3 text-white text-xl">Report2</h1>
-<!-- The button to open modal -->
-<label for="my-modal-3" class="btn absolute bottom-5 right-5 drop-shadow-xl"><i class="fa-solid fa-pen-to-square pr-1"></i>
-    Note</label>
-<canvas id="canvas"></canvas>
 
-<div id="overlay" class="top-0 left-0 w-screen h-screen flex flex-col justify-center items-center fixed backdrop-blur">
-    <button id="PLAY" class="btn btn-outline">
-        PLAY!
-    </button>
-    <p class="text-sm mt-2 ">※音、あります。</p>
-</div>
+<!-- Page title -->
+    <h1 class="absolute top-5 left-3 text-white text-xl">Report2</h1>
+
+<!-- The button to open modal -->
+    <label for="my-modal-3" class="btn absolute bottom-5 right-5 drop-shadow-xl"><i class="fa-solid fa-pen-to-square pr-1"></i>
+        Note</label>
+    <canvas id="canvas"></canvas>
+    <div id="overlay" class="top-0 left-0 w-screen h-screen flex flex-col justify-center items-center fixed backdrop-blur">
+        <button id="PLAY" class="btn btn-outline">
+            PLAY!
+        </button>
+        <p class="text-sm mt-2 ">※音、あります。</p>
+    </div>
 
 <!-- Report modal -->
-<input type="checkbox" id="my-modal-3" class="modal-toggle"/>
-<div class="modal">
-    <div class="modal-box relative">
-        <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"><i
-                class="fa-solid fa-xmark"></i></label>
+    <input type="checkbox" id="my-modal-3" class="modal-toggle"/>
+    <div class="modal">
+        <div class="modal-box relative">
+            <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                    class="fa-solid fa-xmark"></i></label>
 <!-- Title -->
-        <h3 class="text-lg font-bold">第2回　レポート</h3>
+            <h3 class="text-lg font-bold">第2回　レポート</h3>
+
 <!-- Content -->
-        <p class="py-4">
-            Blenderでモデルを作成し、glTF形式のモデルデータをThree.JSで読み込みました。
-            <br>
-            <br>
-            Blenderでベイク処理を行い、モデル・アニメーションと共にglbファイルで書き出しました。
-            <br>
-            <br>
-            地面にディスプレイスメントマップを施したかったのですが、きれいに描画される量のポリゴン数では重すぎたので、今回は断念しました。
-            <br>
-            <br>
-            工夫した点は、エンジンルームから音を出すことと、環境工とポイントライトを調整しながらベイク処理の効果を実験できるようにしたことです。
-        </p>
-        <div class="py-4">
-            <h4 class="bg-base-content text-base-100 font-medium rounded-full w-fit py-0.5 px-1 text-sm">参考</h4>
-            <ul class="list-disc ml-6 mt-2">
+            <p class="py-4">
+                Blenderでモデルを作成し、glTF形式のモデルデータをThree.JSで読み込みました。
+                <br>
+                <br>
+                Blenderでベイク処理を行い、モデル・アニメーションと共にglbファイルで書き出しました。
+                <br>
+                <br>
+                地面にディスプレイスメントマップを施したかったのですが、きれいに描画される量のポリゴン数では重すぎたので、今回は断念しました。
+                <br>
+                <br>
+                工夫した点は、エンジンルームから音を出すことと、環境工とポイントライトを調整しながらベイク処理の効果を実験できるようにしたことです。
+            </p>
+            <div class="py-4">
+                <h4 class="bg-base-content text-base-100 font-medium rounded-full w-fit py-0.5 px-1 text-sm">参考</h4>
+                <ul class="list-disc ml-6 mt-2">
+
 <!-- Citation -->
-                <li><a class="link-accent"
+                    <li><a class="link-accent"
                        href="https://github.com/donmccurdy/three-gltf-viewer">donmccurdy/three-gltf-viewer | GitHub</a></li>
-            </ul>
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 </body>
 </html>
