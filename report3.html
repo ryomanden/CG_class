@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>report3</title>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.137.4/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.137.4/examples/jsm/"
+        }
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/lil-gui@0.18"></script>
+
+    <!-- Header -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"
+            integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+    <script src="style.js"></script>
+    <script type="text/javascript"> writeHeader("./"); </script>
+    <!-- /header -->
+</head>
+<script type="module">
+/* --- IMPORT --- */
+    import * as THREE from "three";
+    import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
+    import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+
+    // status ui
+    import Stats from 'three/addons/libs/stats.module.js';
+    let stats;
+
+    // lil-gui Params
+    var GUI = lil.GUI;
+    const params = {
+        bg: {
+            color: "#d6d6d6",
+        },
+        camera: {
+            rotateSpeed: 1,
+        },
+        light: {
+            ambientIntensity: 3,
+            Light1Intensity: 1,
+            Light1Color: "#ffffff",
+            Light2Intensity: 1,
+            Light2Color: "#FF9C19",
+        },
+        helper: {
+            axisHelper: false,
+            light1helper: false,
+            light2helper: false,
+        },
+    };
+
+    var init = function () {
+        const gui = new GUI();
+
+        // remove play button
+        document.getElementById('overlay').remove();
+
+        // get screen size
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+
+        // create renderer
+        var renderer = new THREE.WebGLRenderer({
+            canvas: document.querySelector('#canvas'),
+            antialias: true
+        });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio); // Retina support
+
+        // renderer Props
+        renderer.physicallyCorrectLights = true;
+        renderer.outputEncoding = THREE.sRGBEncoding;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.shadowMap.enabled = true;
+
+        document.body.appendChild(renderer.domElement);
+
+        // create scene
+        var scene = new THREE.Scene();
+        scene.background = new THREE.Color(params.bg.color);
+
+        // create camera
+        const camera = new THREE.PerspectiveCamera(45, width / height);
+        const controls = new OrbitControls(camera, document.getElementById("canvas"));
+
+        // audio listener
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
+
+        // camera Props
+        camera.position.set(10, 10, 8); // initial position
+        controls.enableDamping = true;
+        controls.dampingFactor = 1;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = params.camera.rotateSpeed;
+
+        // shadow Props
+        const shadowProps = function(light,size)  {
+            light.shadow.camera.right = size;
+            light.shadow.camera.left = -size;
+            light.shadow.camera.top = -size;
+            light.shadow.camera.bottom = size;
+            light.shadow.mapSize.set(4096, 4096);
+            light.castShadow = true;
+        }
+
+/* --- OBJECT --- */
+        const floorGeo = new THREE.PlaneGeometry(2,2);
+        const floorMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+        const floor = new THREE.Mesh(floorGeo,floorMaterial);
+        floor.rotation.x = -0.5 * Math.PI;
+        scene.add(floor);
+
+/* --- SOUND --- */
+
+
+/* --- LIGHT --- */
+        // ambient light
+        const anvLight = new THREE.AmbientLight(0xffffff,params.light.ambientIntensity);
+        scene.add(anvLight);
+
+        // light1
+        const Light1 = new THREE.PointLight(params.light.Light1Color, params.light.Light1Intensity);
+        Light1.position.set(4, 4, 3);
+        Light1.shadow.radius=10;
+        shadowProps(Light1,20);
+            // add scene
+        scene.add(Light1);
+        const Light1_helper = new THREE.PointLightHelper(Light1,1);
+        Light1_helper.visible = params.helper.light1helper;
+        scene.add(Light1_helper);
+
+        // light2
+        const Light2 = new THREE.PointLight(params.light.Light2Color,params.light.Light2Intensity);
+        Light2.position.set(-5, 5, -5);
+        Light2.shadow.radius=10;
+        shadowProps(Light2,20);
+            // add scene
+        scene.add(Light2);
+        const Light2_helper = new THREE.PointLightHelper(Light2,1);
+        Light2_helper.visible = params.helper.light2helper;
+        scene.add(Light2_helper);
+
+        // helper
+        const gridHelper = new THREE.GridHelper(2, 10); // size, step
+        scene.add(gridHelper);
+        const axisHelper = new THREE.AxisHelper(4);
+        axisHelper.visible = params.helper.axisHelper;
+        scene.add(axisHelper);
+
+/* --- USER INTERFACE --- */
+        // background
+        const bgUIGroup = gui.addFolder("Background");
+        bgUIGroup.addColor(params.bg, 'color').onChange(v => scene.background.set(v));
+
+        // camera
+        const cameraUIGroup = gui.addFolder("Camera");
+        cameraUIGroup.add(params.camera, 'rotateSpeed', 0, 10, 0.1).onChange(v => controls.autoRotateSpeed = v);
+
+        // light
+        const lightUIGroup = gui.addFolder("Light");
+        lightUIGroup.add(params.light, 'ambientIntensity', 0, 30, 0.1).listen().onChange(v => anvLight.intensity = v);
+        lightUIGroup.add(params.light, 'Light1Intensity', 0, 30, 0.1).listen().onChange(v => Light1.intensity = v);
+        lightUIGroup.addColor(params.light, 'Light1Color').listen().onChange(v => Light1.color.set(v));
+        lightUIGroup.add(params.light, 'Light2Intensity', 0, 30, 0.1).listen().onChange(v => Light2.intensity = v);
+        lightUIGroup.addColor(params.light, 'Light2Color').listen().onChange(v => Light2.color.set(v));
+
+        // helper
+        const helperUIGroup = gui.addFolder("Helper");
+        helperUIGroup.add(params.helper, 'axisHelper').onChange(v => axisHelper.visible = v);
+        helperUIGroup.add(params.helper, 'light1helper').onChange(v => Light1_helper.visible = v);
+        helperUIGroup.add(params.helper, 'light2helper').onChange(v => Light2_helper.visible = v);
+
+        // preset
+        const preset = {
+            dayLight: function () {
+                anvLight.intensity = 5;
+                Light1.intensity = 3;
+                Light1.color.set('#ffffff');
+                Light2.intensity = 3;
+                Light2.color.set('#ff9c19');
+                params.light.ambientIntensity = 5;
+                params.light.Light1Intensity = 3;
+                params.light.Light1Color = '#ffffff';
+                params.light.Light2Intensity = 3;
+                params.light.Light2Color = '#ff9c19';
+            },
+            night: function () {
+                anvLight.intensity = 0.9;
+                Light1.intensity = 7;
+                Light1.color.set('#ff5900');
+                Light2.intensity = 15;
+                Light2.color.set('#ff9c19');
+                params.light.ambientIntensity = 0.9;
+                params.light.Light1Intensity = 7;
+                params.light.Light1Color = '#ff5900';
+                params.light.Light2Intensity = 15;
+                params.light.Light2Color = '#ff9c19';
+            },
+            reset: function () {
+                anvLight.intensity = 3;
+                Light1.intensity = 1;
+                Light1.color.set('#ffffff');
+                Light2.intensity = 1;
+                Light2.color.set('#ff9c19');
+                params.light.ambientIntensity = 3;
+                params.light.Light1Intensity = 1;
+                params.light.Light1Color = '#ffffff';
+                params.light.Light2Intensity = 1;
+                params.light.Light2Color = '#ff9c19';
+            },
+        }
+        const presetGroup = gui.addFolder("Presets");
+        presetGroup.add(preset, 'dayLight');
+        presetGroup.add(preset, 'night');
+        presetGroup.add(preset, 'reset');
+
+        // status
+        const container = document.createElement( 'div' );
+        container.id = "container";
+        document.body.appendChild( container );
+        stats = new Stats();
+        container.appendChild( stats.dom );
+
+        // run every-frame
+        update();
+        function update  () {
+
+            // status update
+            stats.update();
+
+            // camera auto rotate
+            controls.update();
+
+            // rendering
+            requestAnimationFrame(update);
+            renderer.render(scene, camera);
+        };
+    }
+
+    // load when button is clicked
+    document.getElementById('PLAY').addEventListener('click', init);
+</script>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    #container canvas{
+        margin-top: 70px;
+        margin-left: 10px;
+        position: relative;
+    }
+</style>
+<body>
+
+<!-- Page title -->
+    <h1 class="absolute top-5 left-3 text-white text-xl">Report2</h1>
+
+<!-- The button to open modal -->
+    <label for="my-modal-3" class="btn absolute bottom-5 right-5 drop-shadow-xl"><i class="fa-solid fa-pen-to-square pr-1"></i>
+        Note</label>
+    <canvas id="canvas"></canvas>
+    <div id="overlay" class="top-0 left-0 w-screen h-screen flex flex-col justify-center items-center fixed backdrop-blur">
+        <button id="PLAY" class="btn btn-outline">
+            PLAY!
+        </button>
+        <p class="text-sm mt-2 ">※音、あります。</p>
+    </div>
+
+<!-- Report modal -->
+    <input type="checkbox" id="my-modal-3" class="modal-toggle"/>
+    <div class="modal">
+        <div class="modal-box relative">
+            <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                    class="fa-solid fa-xmark"></i></label>
+<!-- Title -->
+            <h3 class="text-lg font-bold">第3回　レポート</h3>
+
+<!-- Content -->
+            <p class="py-4">
+                ここに本文
+            </p>
+            <div class="py-4">
+                <h4 class="bg-base-content text-base-100 font-medium rounded-full w-fit py-0.5 px-1 text-sm">参考</h4>
+                <ul class="list-disc ml-6 mt-2">
+
+<!-- Citation -->
+                    <li><a class="link-accent"
+                       href="https://github.com/donmccurdy/three-gltf-viewer">ここに文献</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
