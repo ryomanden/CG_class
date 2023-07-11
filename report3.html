@@ -40,11 +40,11 @@
             rotateSpeed: 1,
         },
         light: {
-            ambientIntensity: 3,
-            Light1Intensity: 1,
+            ambientIntensity: 0.5,
+            Light1Intensity: 30,
             Light1Color: "#ffffff",
-            Light2Intensity: 1,
-            Light2Color: "#FF9C19",
+            Light2Intensity: 30,
+            Light2Color: "#ffffff",
         },
         helper: {
             axisHelper: false,
@@ -92,7 +92,7 @@
         camera.add(listener);
 
         // camera Props
-        camera.position.set(10, 10, 8); // initial position
+        camera.position.set(3, 3, 3); // initial position
         controls.enableDamping = true;
         controls.dampingFactor = 1;
         controls.autoRotate = true;
@@ -109,16 +109,38 @@
         }
 
 /* --- OBJECT --- */
-        const floorGeo = new THREE.PlaneGeometry(2,2);
-        const floorMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+        const sphereGeo = new THREE.SphereGeometry(0.5,100,100);
+        const sphereMaterial = new THREE.MeshStandardMaterial({color: 0xffffff});
+        const sphere = new THREE.Mesh(sphereGeo,sphereMaterial);
+        sphere.position.set(0,1,0);
+        sphere.castShadow = true;
+        sphere.receiveShadow = true;
+        scene.add(sphere);
+
+        // const icosahedronGeometry = new THREE.IcosahedronGeometry(0.1, 4);
+        // const lambertMaterial = new THREE.MeshLambertMaterial({
+        //     color: 0xff00ee,
+        //     wireframe: false
+        // });
+        // const ball = new THREE.Mesh(icosahedronGeometry, lambertMaterial);
+        // ball.position.set(0, 0.1, 0);
+        // scene.add(ball);
+
+
+        const floorGeo = new THREE.PlaneGeometry(50,50);
+        const floorMaterial = new THREE.MeshStandardMaterial({color: 0xd6d6d6});
         const floor = new THREE.Mesh(floorGeo,floorMaterial);
         floor.rotation.x = -0.5 * Math.PI;
+        floor.receiveShadow = true;
         scene.add(floor);
 
 /* --- SOUND --- */
 
 
 /* --- LIGHT --- */
+        // add fog
+        scene.fog = new THREE.Fog(0xd6d6d6, 10, 15);
+
         // ambient light
         const anvLight = new THREE.AmbientLight(0xffffff,params.light.ambientIntensity);
         scene.add(anvLight);
@@ -127,6 +149,7 @@
         const Light1 = new THREE.PointLight(params.light.Light1Color, params.light.Light1Intensity);
         Light1.position.set(4, 4, 3);
         Light1.shadow.radius=10;
+        Light1.castShadow = true;
         shadowProps(Light1,20);
             // add scene
         scene.add(Light1);
@@ -136,8 +159,9 @@
 
         // light2
         const Light2 = new THREE.PointLight(params.light.Light2Color,params.light.Light2Intensity);
-        Light2.position.set(-5, 5, -5);
+        Light2.position.set(-5, 2, -5);
         Light2.shadow.radius=10;
+        Light2.castShadow = true;
         shadowProps(Light2,20);
             // add scene
         scene.add(Light2);
