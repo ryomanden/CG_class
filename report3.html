@@ -21,7 +21,8 @@
     <!-- /header -->
 </head>
 <script type="module">
-/* --- IMPORT --- */
+
+    /* --- IMPORT --- */
     import * as THREE from "three";
     import {GLTFLoader} from "three/addons/loaders/GLTFLoader.js";
     import {OrbitControls} from "three/addons/controls/OrbitControls.js";
@@ -41,9 +42,9 @@
         },
         light: {
             ambientIntensity: 0.5,
-            Light1Intensity: 30,
+            Light1Intensity: 100,
             Light1Color: "#ffffff",
-            Light2Intensity: 30,
+            Light2Intensity: 100,
             Light2Color: "#ffffff",
         },
         helper: {
@@ -51,14 +52,15 @@
             light1helper: false,
             light2helper: false,
         },
+        particle: {
+            hslMin: 0,
+            hslMax: 255,
+            randomColor: true,
+        }
     };
 
     var init = function () {
         const gui = new GUI();
-
-        // remove play button
-        document.getElementById('overlay').remove();
-
         // get screen size
         let width = window.innerWidth;
         let height = window.innerHeight;
@@ -92,7 +94,7 @@
         camera.add(listener);
 
         // camera Props
-        camera.position.set(3, 3, 3); // initial position
+        camera.position.set(50, 30, 50); // initial position
         controls.enableDamping = true;
         controls.dampingFactor = 1;
         controls.autoRotate = true;
@@ -108,38 +110,53 @@
             light.castShadow = true;
         }
 
-/* --- OBJECT --- */
-        const sphereGeo = new THREE.SphereGeometry(0.5,100,100);
+        /* --- OBJECT --- */
+
+        // create center sphere
+        const sphereGeo = new THREE.SphereGeometry(5,100,100);
         const sphereMaterial = new THREE.MeshStandardMaterial({color: 0xffffff});
         const sphere = new THREE.Mesh(sphereGeo,sphereMaterial);
-        sphere.position.set(0,1,0);
+        sphere.position.set(0,10,0);
         sphere.castShadow = true;
         sphere.receiveShadow = true;
         scene.add(sphere);
 
-        // const icosahedronGeometry = new THREE.IcosahedronGeometry(0.1, 4);
-        // const lambertMaterial = new THREE.MeshLambertMaterial({
-        //     color: 0xff00ee,
-        //     wireframe: false
-        // });
-        // const ball = new THREE.Mesh(icosahedronGeometry, lambertMaterial);
-        // ball.position.set(0, 0.1, 0);
-        // scene.add(ball);
+        // create group
+        const group = new THREE.Group();
+        scene.add(group);
+        const grpGeo = new THREE.SphereGeometry(0.2, 100, 100);
 
+        var grpMat = {};
+        for (let i = 0; i < 3000; i++) {
+            const h = Math.random() * 255;
 
-        const floorGeo = new THREE.PlaneGeometry(50,50);
+            grpMat[i] = new THREE.MeshBasicMaterial();
+            grpMat[i].color.set(`hsl(${h},100%,50%)`);
+            const mesh = new THREE.Mesh(grpGeo, grpMat[i]);
+            mesh.position.x = (Math.random() - 0.5) * 200;
+            mesh.position.y = Math.random() * 200;
+            mesh.position.z = (Math.random() - 0.5) * 200;
+            mesh.rotation.x = Math.random() * 2 * Math.PI;
+            mesh.rotation.y = Math.random() * 2 * Math.PI;
+            mesh.rotation.z = Math.random() * 2 * Math.PI;
+            // add to group
+            group.add(mesh);
+        }
+
+        // create floor
+        const floorGeo = new THREE.PlaneGeometry(500,500);
         const floorMaterial = new THREE.MeshStandardMaterial({color: 0xd6d6d6});
         const floor = new THREE.Mesh(floorGeo,floorMaterial);
         floor.rotation.x = -0.5 * Math.PI;
         floor.receiveShadow = true;
         scene.add(floor);
 
-/* --- SOUND --- */
+        /* --- SOUND --- */
 
 
-/* --- LIGHT --- */
+        /* --- LIGHT --- */
         // add fog
-        scene.fog = new THREE.Fog(0xd6d6d6, 10, 15);
+        scene.fog = new THREE.Fog(0xd6d6d6, 50, 150);
 
         // ambient light
         const anvLight = new THREE.AmbientLight(0xffffff,params.light.ambientIntensity);
@@ -147,11 +164,11 @@
 
         // light1
         const Light1 = new THREE.PointLight(params.light.Light1Color, params.light.Light1Intensity);
-        Light1.position.set(4, 4, 3);
+        Light1.position.set(50, 40, 50);
         Light1.shadow.radius=10;
         Light1.castShadow = true;
         shadowProps(Light1,20);
-            // add scene
+        // add scene
         scene.add(Light1);
         const Light1_helper = new THREE.PointLightHelper(Light1,1);
         Light1_helper.visible = params.helper.light1helper;
@@ -159,11 +176,11 @@
 
         // light2
         const Light2 = new THREE.PointLight(params.light.Light2Color,params.light.Light2Intensity);
-        Light2.position.set(-5, 2, -5);
+        Light2.position.set(-50, 40, -50);
         Light2.shadow.radius=10;
         Light2.castShadow = true;
         shadowProps(Light2,20);
-            // add scene
+        // add scene
         scene.add(Light2);
         const Light2_helper = new THREE.PointLightHelper(Light2,1);
         Light2_helper.visible = params.helper.light2helper;
@@ -176,7 +193,7 @@
         axisHelper.visible = params.helper.axisHelper;
         scene.add(axisHelper);
 
-/* --- USER INTERFACE --- */
+        /* --- USER INTERFACE --- */
         // background
         const bgUIGroup = gui.addFolder("Background");
         bgUIGroup.addColor(params.bg, 'color').onChange(v => scene.background.set(v));
@@ -199,49 +216,11 @@
         helperUIGroup.add(params.helper, 'light1helper').onChange(v => Light1_helper.visible = v);
         helperUIGroup.add(params.helper, 'light2helper').onChange(v => Light2_helper.visible = v);
 
-        // preset
-        const preset = {
-            dayLight: function () {
-                anvLight.intensity = 5;
-                Light1.intensity = 3;
-                Light1.color.set('#ffffff');
-                Light2.intensity = 3;
-                Light2.color.set('#ff9c19');
-                params.light.ambientIntensity = 5;
-                params.light.Light1Intensity = 3;
-                params.light.Light1Color = '#ffffff';
-                params.light.Light2Intensity = 3;
-                params.light.Light2Color = '#ff9c19';
-            },
-            night: function () {
-                anvLight.intensity = 0.9;
-                Light1.intensity = 7;
-                Light1.color.set('#ff5900');
-                Light2.intensity = 15;
-                Light2.color.set('#ff9c19');
-                params.light.ambientIntensity = 0.9;
-                params.light.Light1Intensity = 7;
-                params.light.Light1Color = '#ff5900';
-                params.light.Light2Intensity = 15;
-                params.light.Light2Color = '#ff9c19';
-            },
-            reset: function () {
-                anvLight.intensity = 3;
-                Light1.intensity = 1;
-                Light1.color.set('#ffffff');
-                Light2.intensity = 1;
-                Light2.color.set('#ff9c19');
-                params.light.ambientIntensity = 3;
-                params.light.Light1Intensity = 1;
-                params.light.Light1Color = '#ffffff';
-                params.light.Light2Intensity = 1;
-                params.light.Light2Color = '#ff9c19';
-            },
-        }
-        const presetGroup = gui.addFolder("Presets");
-        presetGroup.add(preset, 'dayLight');
-        presetGroup.add(preset, 'night');
-        presetGroup.add(preset, 'reset');
+        // particle
+        const particleUIGroup = gui.addFolder("Particle");
+        particleUIGroup.add(params.particle,'hslMin', 0, 255, 0.1);
+        particleUIGroup.add(params.particle,'hslMax', 0, 255, 0.1);
+        particleUIGroup.add(params.particle,'randomColor')
 
         // status
         const container = document.createElement( 'div' );
@@ -253,6 +232,12 @@
         // run every-frame
         update();
         function update  () {
+            if(params.particle.randomColor) {
+                for (let i = 0; i < 3000; i++) {
+                    const h = Math.random() * (params.particle.hslMax - params.particle.hslMin) + params.particle.hslMin;
+                    grpMat[i].color.set(`hsl(${h},100%,50%)`);
+                }
+            }
 
             // status update
             stats.update();
@@ -261,13 +246,13 @@
             controls.update();
 
             // rendering
-            requestAnimationFrame(update);
             renderer.render(scene, camera);
+            requestAnimationFrame(update);
         };
     }
 
-    // load when button is clicked
-    document.getElementById('PLAY').addEventListener('click', init);
+    // load
+    window.addEventListener('DOMContentLoaded', init);
 </script>
 <style>
     body {
@@ -283,42 +268,29 @@
 <body>
 
 <!-- Page title -->
-    <h1 class="absolute top-5 left-3 text-white text-xl">Report2</h1>
+<h1 class="absolute top-5 left-3 text-white text-xl">Report2</h1>
 
 <!-- The button to open modal -->
-    <label for="my-modal-3" class="btn absolute bottom-5 right-5 drop-shadow-xl"><i class="fa-solid fa-pen-to-square pr-1"></i>
-        Note</label>
-    <canvas id="canvas"></canvas>
-    <div id="overlay" class="top-0 left-0 w-screen h-screen flex flex-col justify-center items-center fixed backdrop-blur">
-        <button id="PLAY" class="btn btn-outline">
-            PLAY!
-        </button>
-        <p class="text-sm mt-2 ">※音、あります。</p>
-    </div>
+<label for="my-modal-3" class="btn absolute bottom-5 right-5 drop-shadow-xl"><i class="fa-solid fa-pen-to-square pr-1"></i>
+    Note</label>
+<canvas id="canvas"></canvas>
 
 <!-- Report modal -->
-    <input type="checkbox" id="my-modal-3" class="modal-toggle"/>
-    <div class="modal">
-        <div class="modal-box relative">
-            <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"><i
-                    class="fa-solid fa-xmark"></i></label>
-<!-- Title -->
-            <h3 class="text-lg font-bold">第3回　レポート</h3>
+<input type="checkbox" id="my-modal-3" class="modal-toggle"/>
+<div class="modal">
+    <div class="modal-box relative">
+        <label for="my-modal-3" class="btn btn-sm btn-circle absolute right-2 top-2"><i
+                class="fa-solid fa-xmark"></i></label>
+        <!-- Title -->
+        <h3 class="text-lg font-bold">第3回　レポート</h3>
 
-<!-- Content -->
-            <p class="py-4">
-                ここに本文
-            </p>
-            <div class="py-4">
-                <h4 class="bg-base-content text-base-100 font-medium rounded-full w-fit py-0.5 px-1 text-sm">参考</h4>
-                <ul class="list-disc ml-6 mt-2">
-
-<!-- Citation -->
-                    <li><a class="link-accent"
-                       href="https://github.com/donmccurdy/three-gltf-viewer">ここに文献</a></li>
-                </ul>
-            </div>
-        </div>
+        <!-- Content -->
+        <p class="py-4">
+            3000個の球体をランダムな座標に表示し、それぞれ色をランダムに設定しました。
+            <br>
+            また、毎フレームランダムで色を設定してみました。
+        </p>
     </div>
+</div>
 </body>
 </html>
